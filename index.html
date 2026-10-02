@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Meses - Cristobal y Alessandra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Paleta de colores inspirada en el mar */
+            background: linear-gradient(135deg, #010a15 0%, #0a2e5c 40%, #1565c0 80%, #4dd0e1 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* Efecto de cristal para los contenedores */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Estilos de la Carátula */
+        .caratula {
+            min-height: 60vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .caratula h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5em; 
+            margin-bottom: 5px;
+            color: #e0f7fa;
+            text-shadow: 0 0 20px rgba(77, 208, 225, 0.8); 
+        }
+
+        .caratula .subtitle {
+            font-size: 1.5em;
+            font-weight: 300;
+            color: #b3e5fc;
+            margin-bottom: 25px;
+        }
+
+        .fecha-caratula {
+            font-size: 1.2em;
+            letter-spacing: 6px;
+            color: #81d4fa;
+            border-top: 1px solid rgba(129, 212, 250, 0.5);
+            border-bottom: 1px solid rgba(129, 212, 250, 0.5);
+            padding: 10px 0;
+        }
+
+        /* Contador principal */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .time-box {
+            background: rgba(2, 119, 189, 0.4);
+            padding: 15px 25px;
+            border-radius: 15px;
+            min-width: 100px;
+            border: 1px solid rgba(77, 208, 225, 0.3);
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .time-box p {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #81d4fa;
+        }
+
+        /* Botón general */
+        .btn {
+            background: linear-gradient(135deg, #0288d1, #00acc1);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin: 20px 0;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        /* Carta Modal (Oculta por defecto) */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #0d47a1;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .modal-content h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+
+        /* Trivia Mini-juego */
+        .trivia-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .trivia-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .trivia-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .trivia-btn.correct {
+            background: #4caf50;
+            border-color: #388e3c;
+        }
+
+        .trivia-btn.wrong {
+            background: #f44336;
+            border-color: #d32f2f;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        #daysKnownResult {
+            display: none;
+            margin-top: 30px;
+            background: rgba(76, 175, 80, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #4caf50;
+        }
+
+        #daysKnownResult span {
+            font-size: 3em;
+            font-weight: bold;
+            color: #a5d6a7;
+            display: block;
+        }
+
+        /* Planes a Futuro */
+        .planes-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .planes-list li {
+            background: rgba(0, 0, 0, 0.3);
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: #9e9e9e; /* Color gris para indicar que está bloqueado */
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .planes-list li span {
+            font-size: 1.5em; /* Tamaño del candado */
+        }
+
+        /* Fondo animado */
+        .bubbles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .caratula h1 { font-size: 3.5em; }
+            .time-box { min-width: 70px; padding: 10px; }
+            .time-box span { font-size: 1.8em; }
+            .trivia-options { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo del mar animado -->
+    <div class="bubbles" id="bubbles"></div>
+
+    <!-- Carátula Principal -->
+    <header class="caratula">
+        <h1>Cristobal y Alessandra</h1>
+        <p class="subtitle">Nuestra historia a través del mar de los días...</p>
+        <p class="fecha-caratula">03 • 07 • 2026</p>
+    </header>
+
+    <!-- Contador de Tiempo de Novios -->
+    <div class="glass-card">
+        <h2 style="font-family: 'Dancing Script'; font-size: 2.5em; color: #e0f7fa;">Tiempo siendo felices juntos</h2>
+        <div class="timer-container" id="timer">
+            <div class="time-box"><span id="days">0</span><p>Días</p></div>
+            <div class="time-box"><span id="hours">0</span><p>Horas</p></div>
+            <div class="time-box"><span id="minutes">0</span><p>Minutos</p></div>
+            <div class="time-box"><span id="seconds">0</span><p>Segundos</p></div>
+        </div>
+    </div>
+
+    <!-- Carta Sorpresa (Opción 1) -->
+    <div class="glass-card">
+        <h2 style="font-family: 'Dancing Script'; font-size: 2.5em; color: #e0f7fa;">Tengo algo para ti...</h2>
+        <p style="margin: 15px 0;">Un pequeño mensaje desde el fondo de mi corazón.</p>
+        <button class="btn" onclick="abrirCarta()">💌 Aprieta aquí 💌</button>
+    </div>
+
+    <!-- Modal de la Carta -->
+    <div id="modalCarta" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarCarta()">X</span>
+            <h2>Para ti, mi paz</h2>
+            <p>"Ya son 3 meses con la persona que me da paz y me alegra todos los días.<br><br>
+            Agradecido por todo lo que tenemos y por todo lo que nos espera."</p>
+            <h3 style="font-family: 'Dancing Script'; font-size: 2em; margin-top: 20px;">Te amo</h3>
+        </div>
+    </div>
+
+    <!-- Mini-juego Trivia (Opción 3) -->
+    <div class="glass-card">
+        <h2 style="font-family: 'Dancing Script'; font-size: 2.5em; color: #e0f7fa;">¿Cuánto nos conocemos?</h2>
+        <p style="margin-top: 10px; font-size: 1.2em;">¿Desde qué día nos conocemos oficialmente?</p>
+        
+        <div class="trivia-options">
+            <button class="trivia-btn" onclick="respuestaIncorrecta(this)">02 / 02 / 2025</button>
+            <button class="trivia-btn" onclick="respuestaCorrecta(this)">08 / 02 / 2025</button>
+            <button class="trivia-btn" onclick="respuestaIncorrecta(this)">14 / 02 / 2025</button>
+            <button class="trivia-btn" onclick="respuestaIncorrecta(this)">16 / 02 / 2025</button>
+        </div>
+
+        <div id="daysKnownResult">
+            <p>¡Correcto! Hemos estado compartiendo nuestras vidas durante...</p>
+            <span id="diasTotalesConociendonos">0</span>
+            <p>días exactos desde ese primer momento.</p>
+        </div>
+    </div>
+
+    <!-- Planes a Futuro Bloqueados -->
+    <div class="glass-card">
+        <h2 style="font-family: 'Dancing Script'; font-size: 2.5em; color: #e0f7fa;">Planes por Desbloquear</h2>
+        <p>Aún nos queda un mundo por delante. Próximos destinos:</p>
+        <ul class="planes-list">
+            <li><span>🔒</span> Marzo 2027 (Eurotrip) ✈️</li>
+            <li><span>🔒</span> Aniversario (Tarapoto) 🌴</li>
+        </ul>
+    </div>
+
+    <br><br>
+
+    <script>
+        // --- 1. CONTADOR DE ANIVERSARIO (Desde el 03/07/2026) ---
+        const startDate = new Date('2026-07-03T00:00:00').getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const difference = now - startDate;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = days;
+                document.getElementById('hours').innerText = hours;
+                document.getElementById('minutes').innerText = minutes;
+                document.getElementById('seconds').innerText = seconds;
+            }
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // --- 2. CARTA MODAL SORPRESA ---
+        function abrirCarta() {
+            document.getElementById("modalCarta").style.display = "flex";
+        }
+        function cerrarCarta() {
+            document.getElementById("modalCarta").style.display = "none";
+        }
+
+        // --- 3. TRIVIA Y CONTADOR DE DÍAS CONOCIÉNDOSE ---
+        const meetingDate = new Date('2025-02-08T00:00:00').getTime();
+
+        function respuestaIncorrecta(btn) {
+            btn.classList.add("wrong");
+            // Quitar la clase después de la animación para que pueda volver a temblar
+            setTimeout(() => {
+                btn.classList.remove("wrong");
+            }, 500);
+        }
+
+        function respuestaCorrecta(btn) {
+            // Marcar botón como correcto
+            btn.classList.add("correct");
+            
+            // Deshabilitar los otros botones
+            const botones = document.querySelectorAll(".trivia-btn");
+            botones.forEach(b => b.disabled = true);
+
+            // Calcular días desde que se conocen
+            const now = new Date().getTime();
+            const diffConociendonos = now - meetingDate;
+            const diasTotales = Math.floor(diffConociendonos / (1000 * 60 * 60 * 24));
+
+            // Mostrar el resultado
+            document.getElementById("diasTotalesConociendonos").innerText = diasTotales;
+            document.getElementById("daysKnownResult").style.display = "block";
+        }
+
+        // --- 4. BURBUJAS DE FONDO (Efecto Mar) ---
+        const bubblesContainer = document.getElementById('bubbles');
+        for (let i = 0; i < 20; i++) {
+            let bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            let size = Math.random() * 30 + 10;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + 'vw';
+            bubble.style.animationDuration = Math.random() * 5 + 8 + 's';
+            bubble.style.animationDelay = Math.random() * 5 + 's';
+            bubblesContainer.appendChild(bubble);
+        }
+    </script>
+</body>
+</html>
